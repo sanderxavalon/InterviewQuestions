@@ -301,18 +301,42 @@ class Some {
 
 ### 對於Spring的IoC與DI的理解
 
-**Inversion of Control**控制反轉，只對於Object的控制權轉給Spring，由Spring負責Object的生命週期(創建與銷毀Object)，以及控制Object之間的Dependency。
-
+**Inversion of Control**，控制反轉，只對於Object的控制權轉給Spring，由Spring負責Object的生命週期(創建與銷毀Object)，以及控制Object之間的Dependency。
+    
 ==**簡單來說，不用自己new Object()了**==
 
-
-
-
+**Dependency Injection**，依賴注入，一種IoC的實現，上述的控制Object之間的Dependency，藉由建構子(Constructor)/Setter/服務查找來傳入對應的Object。
 
 ### 甚麼是AOP
 
-### @Component, @Controller, @Repository​​, @Service的各有甚麼作用
+**Aspect Oriented Programming**，面向切面編程。對於Procedure/Object Oriented Programming是直向的流程與關係，對於橫向的功能實現對造成相當大的程式碼重複。(像是要在某些特定的方法進入時留下Log，針對方法的效能偵測這種橫向流程)，可以想像是Servlet中的Filter。
 
+### @Component, @Controller, @Repository​​, @Service的理解
+
+在Spring啟動時會依照`classpath`去自動偵測有這些`Annotation`的`Class`並註冊進`ApplicationContext`後接管，大致上分為以下差別
+
+- **@Component** 一個普通Spring接管的Component
+- **@Service** 主要是用在MVC架構中的Service Layer，只有語意化的用途(給人類辨識的)，對於Spring來說跟 **@Component** 差不多
+- **@Repository** 主要用於持久層，功用是會catch來自持久化相關的Exception，並且轉換成Spring定義的非受檢例外。
+
+註：其實 **@Service** 跟 **@Repository** 底層還是 **@Component**。
+
+```java
+// Spring Source Code
+@Component
+    public @interface Service {
+}
+
+@Component
+    public @interface Repository {
+}
+```
+
+- **@Controller** 由==SpringMVC提供(非Spring)==，以經典MVC架構設計，主要提供以下幾點功能
+    - 攔截外來的Request
+    - 轉換Request payload成內部可用資料結構
+    - 資料向後傳送(以Spring為例，送往Service Layer)
+    - 將處裡好的資料往前送(可能是JSP, Thymeleaf，或是前後端分離的Vue, React, Angular)
 
 ## 中等
 
