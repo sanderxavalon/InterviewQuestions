@@ -230,7 +230,7 @@ private Vector items;
 | Public      | Y        | Y          | Y                | Y         |
 
 2. `static` `非必須`
-加上了static之後就變成了`類別變數`，之後我們在討論差異。
+加上了static之後就變成了`類別變數`，成員變數必須實例化之後才會被創造，個別實體的成員變數是獨立的。而類別變數則是共享的且無須等類別被實例化，所有實體都可以分享該類別變數。
 
 3. `final` `非必須`
 與類別的不能繼承不同，這裡指的是變數不能被re-assign value(類似`js const`)
@@ -247,9 +247,189 @@ private Vector items;
 7. `{name}` ==必須==
 參數名，只要是legal Java identifier 都可以。約定成俗的命名方式是 **==開頭小寫==**
 
+#### 方法 Method
+
+分為兩個副分，`方法宣告method declaration`與`方法體method body`
+
+![](./images/Method-Declaration.gif)
+
+![](./images/Method-Define.gif)
+
+##### 方法宣告method declaration
+
+![](./images/Method-keyword.gif)
+
+1. 權限修飾子(access level) `非必須`
+跟宣告變數的一樣，一樣注意多了一個`protected`。
+
+| 權限修飾子       | 在同一Class | 在同一Package | 不同Package但是子類別繼承 | 不同Package |
+|-------------|----------|------------|------------------|-----------|
+| Private     | Y        | N          | N                | N         |
+| Default(不寫) | Y        | Y          | N                | N         |
+| Protected   | Y        | Y          | Y                | N         |
+| Public      | Y        | Y          | Y                | Y         |
+
+2. `static` `非必須`
+加上了static之後就變成了`類別方法`，跟變數一樣，宣告了之後所有實體皆可調用。
+
+3. `abstract` `非必須`
+
+這裡的抽象與類別的`abstract`相呼應，寫上之後便不用寫方法體，留給繼承的子類別去implement。
+
+4. `final` `非必須`
+
+寫上之後繼承的子類別不能覆寫(Override)。
+
+5. `native` `非必須`
+
+通常用於調用其他語言的方法，不在此討論。
+
+6. `synchronized` `非必須`
+
+通常用於多執行序加鎖，不在此討論。
+
+7. `returnType` ==必須==
+
+回傳類型，可以是基礎型別`primitive type`或是複雜型別，如果不回傳則需使用`void`關鍵字。
+
+8. `{methodName}` ==必須==
+方法名，只要是legal Java identifier 都可以，取名時要小心`Overload`問題
+
+9. `(paramlist)` ==必須==
+傳入參數，如果不傳入參數則寫上`()`
+
+10. `[throws exceptions]`  `非必須`
+需要顯式寫出拋出受檢例外`checked exception`時須加上，這個等到`Exception`篇章再詳細討論
+
+##### 方法體method body
+
+這裡有幾個重點要提：
+
+1. `this`
+
+通常用來給人類看，避免造成誤會，譬如成員變數與方法參數同名時，可以用`this`來表達該實體的參數，請參照以下範例：
+
+```
+class HSBColor {
+    int hue, saturation, brightness;
+    HSBColor (int hue, int saturation, int brightness) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.brightness = brightness;
+    }
+}
+```
+
+2. 區域變數 
+
+如同其他語言一樣，方法結束則變數消失。
+
+```java
+Object findObjectInArray(Object o, Object[] arrayOfObjects) {
+    //方法結束後i則消失
+    int i;      // local variable
+    for (i = 0; i < arrayOfObjects.length; i++) {
+        if (arrayOfObjects[i] == o)
+            return o;
+    }
+    return null;
+}
+```
+
+==**註：Overload與Override**==
+
+**Overload(多載)**，是指在**同一`Class`內有同名方法但參數的個數、型態不同**，但要==注意僅只有參數不同，整個方法簽名(Method Signature)改變不一定能稱為Overload==。請參考以下範例：
+
+- 原有方法
+```java
+public void show(String message) {
+    System.out.println(message);
+}
+```
+
+- Overload - 參數個數不一
+```java
+public void show(String message, boolean show) {
+    System.out.println(message);
+}
+```
+
+- Overload - 參數型態不一致
+```java
+public void show(Integer message) {
+    System.out.println(message);
+}
+```
+
+- 非Overload - 改變回傳參數
+```java
+public boolean show(String message) {
+    System.out.println(message);
+    return false;
+}
+```
+
+**Override(覆寫)**，是指在**有繼承關係的`Class`內方法簽名(Method Signature)一致的同名方法**，請參考以下範例：
+
+```java
+public class Animal {
+    public void say(String message) {
+        System.out.println(message);
+    }
+}
+
+// 方法簽名一樣但是在不一樣的繼承類別
+class Dog extends Animal {
+    @Override
+    public void say(String message) {
+        System.out.println("I'm dog, bark!");
+    }
+}
+```
+運行看看...
+```java
+public class App {
+    public static void main( String[] args ) {
+        Animal animal = new Dog();
+        animal.say("I'm unknown animal");
+    }
+}
+```
+
+```
+Output:
+I'm dog, bark!
+```
+
+註：@Override可以不加，依然可以編譯通過並執行。但加了有兩個好處：
+1. 編譯器會幫你檢查Overriding的方法是否與父類別的簽名保持一致，避免出錯。
+2. 對於人類來讀程式碼的時候，會比較好理解。
 
 
 
+Overload與Override都是**Java實現多型的方法**。具體差異如下：
+
+| Overriding      | Overloading   |
+|-----------------|---------------|
+| 執行時期多型          | 編譯時期多型        |
+| 執行時期決定哪個方法應該被呼叫 | 編譯時期就決定呼叫哪個方法 |
+| 存在與父子類別         | 存在於同一類別       |
+| 以一樣的方法簽名        | 只有方法名字一樣，參數不同 |
+|  出錯時，只有執行時期看的見  | 出錯可以在編譯時期就看見  |
+
+
+#### 建構子 Constructor
+
+**==類別同名方法==**，所有Java類別都有建構子去實例化物件。==因Java有Overload(多載)機制，所以建構子可以有多個==。而呼叫時Java會判斷類型與參數數量去決定使用哪個建構子。不過建構子不一定要寫，==如果compiler沒偵測到類別中有顯式寫出建構子的話，會自動提供預設建構子(default constructor)==，但要注意的是裡面的成員類別因為沒有assigned value，所有的成員變數均為預設值(如int = 0, 自定義類別為null)。
+
+而建構子也可以套用權限修飾子。
+
+| 權限修飾子     | 作用                        |
+|-----------|---------------------------|
+| private   | 誰都不行實例化類別，通常用於Singleto Pattern |
+| protected | 只有繼承類別可以實例化               |
+| public    | 誰都可以實例化                   |
+| default   | 只有同package下的類別可以實例化       |
 
 # Exception
 
