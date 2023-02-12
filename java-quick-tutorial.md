@@ -140,19 +140,116 @@ double 	數值範圍：1.797693e+308 ~ 4.900000e-324
 
 # 物件基礎
 
+## 定義類別 Define Class
+
 ![](images/Declare-Class.gif)
 
+### 類別宣告 The Class Declaration
+
+第一行內我們可以分為幾個部分：
+
+![](/images/Class-keyword.gif)
+
+1. 權限修飾子 `非必須`
+
+定義這個Class的Scope(可視範圍)，要注意與Field(成員變數)與Method的差別是沒有`protected`
+
+至於為什麼沒有可以[參考這篇stackoverflow](https://stackoverflow.com/questions/3869556/why-can-a-class-not-be-defined-as-protected)
+
+| 限修飾子        | 在同一Class | 在同一Package | 不同Package  |
+|-------------|----------|------------|------------|
+| Private     | Y        | N          | N          |
+| Default(不寫) | Y        | Y          | N          |
+| Public      | Y        | Y          | Y          |
+
+2. `abstract` 抽象 `非必須`
+
+這個關鍵字用在宣告Class的時候，這個Class便不能被實例化(instantiate)。
+
+==簡單講，就是無法用`new`去產生物件。==
+
+3. `final` `非必須`
+
+這個關鍵字用在宣告Class的時候，這個Class便不能被繼承。
+
+==簡單講，就是無法有子類別。==
+
+題外話，`final`如果再成員變數上使用的話跟`javascript`的`const`很像，不能重複`assign value`
+
+4. `class {NameOfClass}` ==必須==
+
+`class`關鍵字讓`compiler`知道你要定義的是類別，`{NameOfClass}`則是定義類別的名稱，規則之前有提到：==**在定義類別名稱時，建議將類別首字母大寫**==
+
+5. `extends {SuperClass}` `非必須`
+
+`extends`關鍵字代表繼承，被繼承者須為類別，這個我們之後會提到。這邊只要注意的是 ==**Java繼承只能使用一次(單一繼承)，與C++多重繼承不同。**==
+
+6. `implements {Interface}` `非必須`
+
+`implements`關鍵字代表實作，被實作者須為介面，依樣之後會提到，這邊只要注意的是 ==**Java可以無限實作介面，與繼承只能一次不同**==
 
 
-## `finalize()`
+### 類別體
 
-**==Java 9 已棄用==**
+由`{}`包覆，裡面會有包含以下幾個元素：
 
-## 類別宣告
+- 變數
 
-分為兩個部分，第一行的類別宣告與後面的類別體
+主要有以下兩種
 
-### 宣告內容
+1. 成員變數
+2. 類別變數
+
+- 方法
+
+1. 成員方法
+2. 類別方法
+3. 有個特別的 **==類別同名方法==**，我們稱為 **==建構子(`constructor`)==**
+
+我們先從變數與宣告講起：
+
+#### 變數與宣告 Declaring Variables
+
+
+```java
+private Vector items;
+```
+
+而宣告變數中也有幾個元素可以參考
+
+![](/images/Variable-keyword.gif)
+
+1. 權限修飾子(access level) `非必須`
+我們剛剛有提到類別的權限修飾子，而變數也有，這時候要注意多了一個`protected`。
+
+| 權限修飾子       | 在同一Class | 在同一Package | 不同Package但是子類別繼承 | 不同Package |
+|-------------|----------|------------|------------------|-----------|
+| Private     | Y        | N          | N                | N         |
+| Default(不寫) | Y        | Y          | N                | N         |
+| Protected   | Y        | Y          | Y                | N         |
+| Public      | Y        | Y          | Y                | Y         |
+
+2. `static` `非必須`
+加上了static之後就變成了`類別變數`，之後我們在討論差異。
+
+3. `final` `非必須`
+與類別的不能繼承不同，這裡指的是變數不能被re-assign value(類似`js const`)
+
+4. `transient` `非必須`
+**==很少用==** ，通常是用在序列化`Object Serialization`用，但Java現在已經很少再用甚至不被推薦使用，有興趣可以參考我之前寫的[我在想甚麼時候該用Serializable](https://blog.sanderxavalon.com/archives/when-to-use-serializable)
+
+5. `volatile` `非必須`
+**==進階Java才會用到==**，主要是解決多執行續的相關問題，這議題不再這個光速講義的範圍裡面。
+
+6. `{type}` ==必須==
+型別，可以是基礎型別`primitive type`像是`short`, `int`...，或是類別型態(`Class type`)像是`String`等等。
+
+7. `{name}` ==必須==
+參數名，只要是legal Java identifier 都可以。約定成俗的命名方式是 **==開頭小寫==**
+
+
+
+
 
 # Exception
 
