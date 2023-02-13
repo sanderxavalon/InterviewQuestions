@@ -30,19 +30,20 @@
 
 ### 設定Maven Home
 
-1. 
+1. 點`設定`，點`系統`
+![](images/maven/2_0.png)
 ![](images/maven/2_1_setting.png)
-2. 
+2. 點`關於`，點`進階系統設定`
 ![](images/maven/2_2_advanceSetting.png)
-3. 
+3. 點`環境變數`
 ![](images/maven/2_3_environmentSetting.png)
-4. 
+4. 點`新增`
 ![](images/maven/2_4_newPath.png)
-5.
-![](images/maven/2_5_editPathEnv.png)
-6. 
+5. 變數名稱固定使用`M2_HOME`
 ![](images/maven/2_6_setPath.png)
-7. 
+6. 編輯`Path`變數
+![](images/maven/2_5_editPathEnv.png)
+7. 點`新增`，`%M2_HOME%\bin`
 ![](images/maven/2_7_addPathEvn.png)
 
 以上便設定完成。
