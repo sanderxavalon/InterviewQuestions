@@ -55,6 +55,44 @@
 
 ![](images/maven/3_mavenVersion.png)
 
+### Maven資料夾結構
+
+```
+project-name/
+├─ src/
+│  ├─ main/
+│  │  ├─ java/
+│  │  ├─ resource/
+│  ├─ test/
+│  │  ├─ java/
+│  │  ├─ resource/
+├─ target/ 
+├─ pom.xml
+```
+#### `src/main/java`
+
+主要放程式碼
+
+#### `src/main/resource`
+
+主要放配置檔案
+
+#### `src/test/java`
+
+主要放測試程式碼
+
+#### `src/test/resource`
+
+主要放測試用的配置檔案
+
+#### `target`
+
+放編譯/打包好的檔案，通常會列入`.gitignore`
+
+#### `pom.xml`
+
+`Maven`最重要的設定檔案，每個專案都藉由`pom.xml`進行依賴關係設定與打包的流程。
+
 # 基礎語法
 
 ## 第一個程式
