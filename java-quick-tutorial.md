@@ -431,10 +431,133 @@ Overload與Override都是**Java實現多型的方法**。具體差異如下：
 | public    | 誰都可以實例化                   |
 | default   | 只有同package下的類別可以實例化       |
 
-# Exception
+## 封裝，繼承，多型
 
-# Collection Framework與Map
+# Exception 
+
+## 簡介與語法
+
+> 程式中的臭蟲（Bug）總是無所不在，即使您認為程式中應該沒有錯誤了，臭蟲總會在某個時候鑽出來困擾您，面對程式中各種層出不窮的錯誤，Java 提供了「例外處理」機制來協助開發人員避開可能的錯誤，「例外」（Exception）在 Java 中代表一個錯誤的實例，編譯器會幫您檢查一些可能產生例外（Checked exception）的狀況，並要求您注意並處理，而對於「執行時期例外」（Runtime exception），您也可以嘗試捕捉例外並將程式回復至正常狀況。
+>
+> *Java SE 6 技術手冊，[第 10 章 例外處理（Exception Handling）](https://github.com/JustinSDK/JavaSE6Tutorial/blob/master/docs/CH10.md#%E7%AC%AC-10-%E7%AB%A0-%E4%BE%8B%E5%A4%96%E8%99%95%E7%90%86exception-handlingF)*
+
+在 Java 中如果想嘗試捕捉例外，可以使用 "try"、"catch"、"finally" 三個關鍵字組合的語法來達到，其語法基本結構如下：
+
+```java
+try {
+    // 陳述句
+}
+catch(例外型態 名稱) {
+    // 例外處理
+}
+finally {
+    // 一定會處理的區塊
+}
+```
+一個 "try" 語法所包括的區塊，必須有對應的 "catch" 區塊或是 "finally" 區塊，"try" 區塊可以搭配多個 "catch" 區塊，如果有設定 "catch" 區塊，則 "finally" 區塊可有可無，如果沒有定義 "catch" 區塊，則一定要有 "finally" 區塊。
+
+
+## 受檢例外（Checked Exception）、執行時期例外（Runtime Exception）
+
+### 架構圖
+
+```
+    ┌───────────┐
+    │ Throwable │
+    └─────┬─────┘
+    ┌─────┴──────┐
+┌───┴───┐  ┌─────┴─────┐
+│ Error │  │ Exception │
+└───────┘  └─────┬─────┘
+                 │
+        ┌────────┴─────────┐
+        │ RuntimeException │
+        └──────────────────┘
+```
+
+### 受檢例外
+
+> 例如使用輸入輸出功能時，可能會由於硬體環境問題，而使得程式無法正常從硬體取得輸入或進行輸出，這種錯誤是可預期發生的，像這類的例外稱之為「受檢例外」（Checked Exception）
+>
+> *Java SE 6 技術手冊，[第 10 章 例外處理（Exception Handling）](https://github.com/JustinSDK/JavaSE6Tutorial/blob/master/docs/CH10.md#%E7%AC%AC-10-%E7%AB%A0-%E4%BE%8B%E5%A4%96%E8%99%95%E7%90%86exception-handlingF)*
+
+==**簡單來說，就是一定要處理的Excpetion，不管繼續拋出去或是攔截處理。**==
+
+### 執行時期例外
+
+>「執行時期例外」（Runtime exception），也就是例外是發生在程式執行期間，並不一定可預期它的發生，編譯器不要求您一定要處理，對於執行時期例外若沒有處理，則例外會一直往外丟，最後由 JVM 來處理例外，JVM 所作的就是顯示例外堆疊訊息，之後結束程式。
+>
+> *Java SE 6 技術手冊，[第 10 章 例外處理（Exception Handling）](https://github.com/JustinSDK/JavaSE6Tutorial/blob/master/docs/CH10.md#%E7%AC%AC-10-%E7%AB%A0-%E4%BE%8B%E5%A4%96%E8%99%95%E7%90%86exception-handlingF)*
+
+==**簡單來說，不強制要處理**==
+
+## throw、throws
+
+> 當程式發生錯誤而無法處理的時候，會丟出對應的例外物件，除此之外，在某些時刻，您可能會想要自行丟出例外，例如在捕捉例外並處理結束後，再將例外丟出，讓下一層例外處理區塊來捕捉；另一個狀況是重新包裝例外，將捕捉到的例外以您自己定義的例外物件加以包裝丟出。若想要自行丟出例外，您可以使用 "throw" 關鍵字，並生成指定的例外物件，例如：
+> ```
+> javathrow new ArithmeticException();
+> ```
+
+> 如果您在方法中會有例外的發生，而您並不想在方法中直接處理，而想要由呼叫方法的呼叫者來處理，則您可以使用 `throws` 關鍵字來宣告這個方法將會丟出例外，例如 `java.ioBufferedReader` 的 `readLine()` 方法就聲明會丟出 java.io.IOException。使用 `throws` 聲明丟出例外的時機，通常是工具類別的某個工具方法，因為作為被呼叫的工具，本身並不需要將處理例外的方式給定義下來，所以在方法上使用`throws`聲明會丟出例外，由呼叫者自行決定如何處理例外是比較合適的，您可以如下使用 `throws` 來丟出例外：
+
+```java
+private void someMethod(int[] arr) throws 
+                ArrayIndexOutOfBoundsException, 
+                ArithmeticException { 
+    // 實作 
+}
+```
+
+**==註：除非是受檢例外`Checked Exception`或是一些特別例外，不然`Runtime Exception`不應該`throws`，寫在`javadoc`裡面會比較好。有興趣可以參考[這篇stackoverflow文章](https://stackoverflow.com/questions/20871763/should-i-declare-unchecked-exceptions-in-the-throws-specification)==**
+
+## `Assertions`
+
+JDK 1.4加入，==基本上不使用，與Junit的Assert是不一樣的東西。有興趣可以參考[這篇stackoverflow文章](https://stackoverflow.com/questions/2758224/what-does-the-java-assert-keyword-do-and-when-should-it-be-used)==
+
+
+# 物件容器與泛型
+
+基本上就是裝物件的容器，依照介面分為`Collection`與`Map`
+
+![](./images/CollectionFramework.png)
+
+常用的介面有一些特行，請考下表
+
+|          | List                    | Set                                   | Map                                                                |
+|----------|-------------------------|---------------------------------------|--------------------------------------------------------------------|
+| 重複物件     | 可以                      | 不可以                                   | 不可以                                                                |
+| 順序       | 依照插入順序                  | 沒有順序                                  | 沒有順序                                                               |
+| Nullable | 可以加入Null                | Null只能有一個                             | Key只能有一個，但Value可以多個Null                                             |
+| 實現       | Array List, LinkedList. | HashSet, LinkedHashSet, and TreeSet.  | HashMap, HashTable, TreeMap, ConcurrentHashMap, and LinkedHashMap. |
+| 用途       | 需要常用index存取             | 需要物件是唯一的                              | 需要鍵值對的時候                                                           |
+
+詳細操作可以[參考這篇教學](https://github.com/JustinSDK/JavaSE6Tutorial/blob/master/docs/CH13.md#%E7%AC%AC-13-%E7%AB%A0-%E7%89%A9%E4%BB%B6%E5%AE%B9%E5%99%A8container)。
+
+## 泛型
+
+因為教學篇幅的問題，這邊只提到怎麼使用以及大略概念。
+
+> 在 J2SE 5.0 之後新增了泛型（Generic）的功能，使用物件容器時可以宣告將儲存的物件型態，如此您的物件在存入容器會被限定為您所宣告的型態，編譯器在編譯時期會協助您進行型態檢查，而取出物件時也不至於失去原來的型態資訊，這可以避免型態轉換時的問題。
+
+### 語法
+
+在容器宣告的後面寫上`<>`，裡面是類型名稱
+
+```java
+List<String> list = new ArrayList<String>();        
+```
+
+如果懶得化，也可以寫成這樣
+
+```java
+List<String> list = new ArrayList<>();        
+```
+
 
 # Java 8 Lambda
 
 
+參考：
+[https://www.cs.fsu.edu/~jtbauer/cis3931/tutorial/trailmap.html](https://www.cs.fsu.edu/~jtbauer/cis3931/tutorial/trailmap.html)
+[https://docs.oracle.com/en/java/javase/17/](https://docs.oracle.com/en/java/javase/17/)
+[https://docs.oracle.com/javase/tutorial/java/javaOO/localclasses.html](https://docs.oracle.com/javase/tutorial/java/javaOO/localclasses.html)
