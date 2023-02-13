@@ -1,8 +1,6 @@
 # Java/Spring 面試體集合
 
-# Java
-
-## 簡易
+## Java
 
 ### 請描述JVM, JDK, JRE區別
 
@@ -285,21 +283,11 @@ class Some {
 | Public      | Y        | Y          | Y                | Y         |
 
 
-## 中等
-
-### 成員變數(Field，或是Member Variable)，與區域變數(Local Variable)有何不同？
-
-### HashMap和HashTable的區別?
-
-### 說明stack跟heap？
-
-## 困難
-
-# Spring
-
-## 簡易
+## Spring
 
 ### 對於Spring的IoC與DI的理解
+
+==**答案**==
 
 **Inversion of Control**，控制反轉，只對於Object的控制權轉給Spring，由Spring負責Object的生命週期(創建與銷毀Object)，以及控制Object之間的Dependency。
     
@@ -309,9 +297,13 @@ class Some {
 
 ### 甚麼是AOP
 
+==**答案**==
+
 **Aspect Oriented Programming**，面向切面編程。對於Procedure/Object Oriented Programming是直向的流程與關係，對於橫向的功能實現對造成相當大的程式碼重複。(像是要在某些特定的方法進入時留下Log，針對方法的效能偵測這種橫向流程)，可以想像是Servlet中的Filter。
 
 ### @Component, @Controller, @Repository​​, @Service的理解
+
+==**答案**==
 
 在Spring啟動時會依照`classpath`去自動偵測有這些`Annotation`的`Class`並註冊進`ApplicationContext`後接管，大致上分為以下差別
 
@@ -338,6 +330,73 @@ class Some {
     - 資料向後傳送(以Spring為例，送往Service Layer)
     - 將處裡好的資料往前送(可能是JSP, Thymeleaf，或是前後端分離的Vue, React, Angular)
 
-## 中等
+### Spring Bean有哪些Scope
 
-## 困難
+==**答案**==
+
+- Singleton
+默認的Scope，Bean在Spring容器只會有一個Instance
+
+- Prototype
+每次調用Bean時都會產生新Instance
+
+- Request
+每次HTTP Request都會產生新的Instance
+**==只在WebApplicationContext下使用==**
+
+- Session
+同Session使用同個Instance，不同Session不同Instance。
+**==只在WebApplicationContext下使用==**
+
+- GlobalSession
+Instance存在於全局HTTP session，但通常僅Portlet使用(一種Java的MVC規範)
+**==只在WebApplicationContext下使用==**
+
+### @Autowired根據Bean的哪種屬性(Type/Name)進行裝配的
+
+==**答案**==
+
+ByType，根據Bean的類型進行裝配
+
+### 呈上題，如果有兩個相同Type的Bean出現可以嗎，如不行要如何解決
+
+==**答案**==
+
+會無法啟動，因為Bean有衝突。
+
+1. 可以用`@Qualifier`，將原本ByType改成ByName的方式，用Bean的名稱查找並裝配。
+
+```java
+@Service
+public class UserService {
+
+    @Autowired
+    @Qualifier("user1")
+    private IUser user;
+}
+```
+
+2. 或是在Bean上面加上`@Primary`，在裝配時有多個候選者(Candidate)的時候，會優先裝配有`@Primary`的Bean
+
+```java
+@Primary
+@Service
+public class User1 implements IUser{
+    @Override
+    public void say() {
+    }
+}
+```
+
+### `@Autowired`和`@Resouce`的區別
+
+==**答案**==
+
+功能類似，同樣可以實現ByType/ByName裝配，但`@Autowired`是Spring框架自定義的，而`@Resource`是JSR-250標準，可以被其他框架支援。
+
+|            | @Autowired    | @Resource     |
+|------------|---------------|---------------|
+| 標準         | Spring定義      | JSR-250       |
+| 默認裝配方式     | byType        | byName        |
+| 如何byName裝配 |  搭配`@Qualifier` |  在參數中指定name即可 |
+

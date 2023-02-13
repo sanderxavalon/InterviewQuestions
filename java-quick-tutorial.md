@@ -249,14 +249,13 @@ double 	數值範圍：1.797693e+308 ~ 4.900000e-324
 
 #### 變數與宣告 Declaring Variables
 
-
 ```java
 private Vector items;
 ```
 
 而宣告變數中也有幾個元素可以參考
 
-![](/images/Variable-keyword.gif)
+![](./images/Variable-keyword.gif)
 
 1. 權限修飾子(access level) `非必須`
 我們剛剛有提到類別的權限修飾子，而變數也有，這時候要注意多了一個`protected`。
@@ -472,6 +471,23 @@ Overload與Override都是**Java實現多型的方法**。具體差異如下：
 
 ## 封裝，繼承，多型
 
+### 封裝（Encapsulation）
+概念就是在程式碼中設置權限，讓不同的物件之間有不同的存取限制。封裝的程式碼實作是透過`權限修飾子`來達成的，請參考模組`_03_ObjectOrient`中的`Encapsulation.java`
+
+### 繼承 ( Inheritance )
+
+繼承性（Inheritance）的概念很簡單，可用日常生活的比喻來理解。例如，兒子繼承了爸爸的家業（子類別會繼承父類別的屬性和方法），所以兒子會有父親已經做過的東西，而不必再重新做一次。而在程式語言中，繼承最大的好處是可以不必一再撰寫重複的程式碼，不只節省心力和時間，更重要的是可以提高程式的可讀性，增加程式的結構化程度，並讓維護和新增功能時更加容易方便、減少錯誤。
+
+請參考模組`_03_ObjectOrient`中的`Inheritance.java`
+
+### 多型 ( Polymorphism )
+
+==**這邊目前只提到介面多型，以方法多型上述Overload/Override解釋過一次**==
+
+多型，指同一個行為，但有不同的結果，例如滑鼠左鍵點擊，有時點擊是確認事件，在遊戲就可能是射擊事件，但同樣都是滑鼠左鍵點擊，卻執行不一樣的內容，如此一來，可以讓我們更有彈性的設計，不會被侷限只能永遠特定型別才能被呼叫使用，而是可以不斷延伸擴展出來更多種型別。
+
+請參考模組`_03_ObjectOrient`中的`Polymorphism.java`
+
 # Exception 
 
 ## 簡介與語法
@@ -592,8 +608,94 @@ List<String> list = new ArrayList<String>();
 List<String> list = new ArrayList<>();        
 ```
 
+# Java 8
 
-# Java 8 Lambda
+## Lambda
+
+詳細請參考`06_Java8New`模駔的`Lambda.java`
+
+Lambda語法只能用來表示一個「只擁有一個方法的介面」所實作出來的匿名類別，大致語法如下：
+
+```
+input -> body
+```
+
+其中，input和body都各有多種撰寫方式，以下分別舉例。
+
+**input** 
+
+- 不輸入
+
+```
+()
+```
+- 單個輸入
+
+```
+x
+```
+
+- 多個輸入(不省略型態)
+
+```java
+(int x,int y)
+```
+
+- 多個輸入(省略型態)
+
+```java
+(x,y)
+```
+
+**body**
+
+- 什麼都不做
+
+```
+{}
+```
+
+- 單行不回傳值
+
+```java
+System.out.println("NO");
+```
+
+- 多行不回傳值
+
+```java
+{
+    System.out.println("NO");
+    System.out.println("NO2");
+}
+```
+
+- 單行回傳值
+
+```java
+x+y
+```
+
+- 多行回傳值
+
+```java
+{
+    x++;
+    y-=x;
+    return x+y;
+}
+```
+
+## Stream
+
+詳細請參考`06_Java8New`模駔的`Stream.java`
+
+Stream是Java8的新特性，針對物件集合使用類似SQL語句從數據庫查詢數據，讓程式員得以乾淨、簡潔、高效率的代碼、達到聚合運算的目的。
+
+Stream主要分為兩種操作， `intermediate operation`及`terminal operations`，前者常見方法有`filter`, `map`, `sorted`，是屬於惰性操作，可以想像成是資料的處理過程，程式執行到此不會產生新值，需要有後續的`terminal operations`，常見的方法有`collect`、`forEach`、`reduce`，屬於急性操作，將前段處理後的資料進行收集的動作。
+
+區分惰性與急性的原因在於因應複雜操作的需求，我們往往會建構一系列串接的惰性操作，而最後有個急性操作產生最後結果。
+
 
 
 參考：
